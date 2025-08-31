@@ -2,6 +2,7 @@
 
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+
 export const authOptions = {
   providers: [
     GoogleProvider({
@@ -27,7 +28,7 @@ export const authOptions = {
               name: user.name,
               email: user.email,
               image: user.image,
-              role:user.role || "user",
+              role:user.role ?? "user",
             })
           });
           if (!response.ok) throw new Error("User API failed");
@@ -52,8 +53,10 @@ export const authOptions = {
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.id;
-      session.user.role = token.role;
+      if(session?.user){
+        session.user.id = token.id;
+        session.user.role = token.role;
+      }
       return session;
     }
     },
