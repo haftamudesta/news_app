@@ -1,17 +1,19 @@
-import { Geist, Geist_Mono } from "next/font/google";
+// import { Geist, Geist_Mono } from "next/font/google";
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
 import "./globals.css";
-import NavBar from "./components/NavBar";
+import NavBar from './components/NavBar';
 import { NextAuthProvider } from "./provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+// const geistSans = Geist({
+//   variable: "--font-geist-sans",
+//   subsets: ["latin"],
+// });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// const geistMono = Geist_Mono({
+//   variable: "--font-geist-mono",
+//   subsets: ["latin"],
+// });
 
 export const metadata = {
   title: "Create Next App",
@@ -20,15 +22,17 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en"
+    className={`${GeistSans.variable} ${GeistMono.variable} scroll-smooth`}
+    >
+      <body>
         <NextAuthProvider>
-          <div className="maxt-w-full mx-auto text-white">
-            <NavBar />
-            <div className="min-h-screen h-full w-full bg-linear-45 from-[#12243c] to-[#0f1222]">{children}</div>
-          </div>
+        <div className="maxt-w-full mx-auto text-white">
+        <NavBar />
+        <div className="min-h-screen h-full w-full bg-linear-45 from-[#12243c] to-[#0f1222]">
+        {children}
+        </div>
+      </div>
       </NextAuthProvider>
       </body>
     </html>

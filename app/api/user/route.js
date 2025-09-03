@@ -1,10 +1,9 @@
 import User from "../../../models/UsersModel";
-import { connectToMongoDB } from "@/lib/mongoDB";
 import { NextResponse } from "next/server";
+import { getCollection } from "../../../lib/mongoDB";
 
 export async function POST(request) {
   try {
-    console.log("Request is:",request)
     const { name, email, image, role = "user" } = await request.json();
     if (!email) {
       return NextResponse.json(
@@ -13,7 +12,8 @@ export async function POST(request) {
       );
     }
 
-  await connectToMongoDB();
+    const userCollection=await getCollection("users")
+    console.log(userCollection)
     const user = await User.findOneAndUpdate(
       { email },
       { name, image, role, lastLogin: new Date() },
