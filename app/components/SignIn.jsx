@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 export default function SignInPage() {
   const {status,data:session}=useSession()
-  console.log(session)
+  console.log("Session:",session)
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState(searchParams.get('error'));
@@ -71,7 +71,7 @@ export default function SignInPage() {
         By signing in you agree to our{' '}
         <Link href={'/tos'} className='text-blue-500 hover:underline'>Terms of service</Link>{'  '}and{'  '}<Link href={'/privacy'}className='text-blue-500 hover:underline'>Privacy policy</Link>
       </div>
-      
+      <p>{session?.user?.name}</p> 
       </div>
       </div>
   );

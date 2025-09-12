@@ -1,34 +1,43 @@
-import User from "../../../models/UsersModel";
-import { NextResponse } from "next/server";
-import { getCollection } from "../../../lib/mongoDB";
+
+import { getCollection } from '@/lib/mongoDB';
+import User from '@/models/UsersModel';
+import { NextResponse } from 'next/server';
 
 export async function POST(request) {
-  try {
-    const { name, email, image, role = "user" } = await request.json();
-    if (!email) {
-      return NextResponse.json(
-        { message: "Email is required" },
-        { status: 400 }
-      );
-    }
+	try {
+		const { name, email, image } = await request.json();
+		await getCollection("user");
+		console.log("name and email...")
+		console.log(name,email)
+		const userExists = await User.findOne({ email });
+		if (userExists) {
+			userExists.name = name;
+			userExists.image = image;
+			const updatedUser = await userExists.save();
 
-    const userCollection=await getCollection("users")
-    console.log(userCollection)
-    const user = await User.findOneAndUpdate(
-      { email },
-      { name, image, role, lastLogin: new Date() },
-      { new: true, upsert: true }
-    );
-    return NextResponse.json(
-      { message: "User processed successfully", data: user },
-      { status: 200 }
-    );
+			return NextResponse.json(
+				{ message: 'User Exits', data: updatedUser },
+				{ status: 200 }
+			);
+		}
 
-  } catch (error) {
-    console.error("User API Error:", error);
-    return NextResponse.json(
-      { message: "Authentication failed", error: error.message },
-      { status: 500 }
-    );
-    }
+		const newUser = await new User({ name, email, image });
+		const createdUser = await newUser.save();
+
+		if (createdUser) {
+			return NextResponse.json(
+				{ message: 'User created', data: createdUser },
+				{ status: 201 }
+			);
+		}
+		return NextResponse.json(
+			{ message: 'Something went wrong' },
+			{ status: 500 }
+		);
+	} catch (error) {
+		return NextResponse.json(
+			{ message: 'Something went wrong' },
+			{ status: 400 }
+		);
+	}
 }
