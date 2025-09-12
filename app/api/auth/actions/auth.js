@@ -1,3 +1,12 @@
+"use server"
+
+import bcrypt from "bcrypt"
+import { getCollection } from "@/lib/mongoDB"
+import { RegisterFormSchema } from "@/lib/rules";
+import { redirect } from "next/navigation";
+import { createSession } from "@/lib/sessions";
+import { cookies } from "next/headers";
+
 export async function register(state,formData){
         const validateFormFields=RegisterFormSchema.safeParse({
                 email:formData.get("email"),
