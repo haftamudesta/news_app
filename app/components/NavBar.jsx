@@ -15,7 +15,7 @@ const navLinks = [
         { href: "/news/most_viewed", label: "Most Viewed", icon: <FaEye className="w-5 h-5" /> },
         { href: "/news/trending", label: "Trending", icon: <FaChartLine className="w-5 h-5" /> },
         { href: "/admin-controls/categories", label: "Categories", icon: <BiSolidCategory className="w-5 h-5" /> },
-        { href: "/profile", label: "Profile", icon: <CgProfile className="w-5 h-5" /> }
+        { href: "/register", label: "Sign Up", icon: <CgProfile className="w-5 h-5" /> }
     ];
 
 const NavBar = () => {
