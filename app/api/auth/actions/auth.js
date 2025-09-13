@@ -81,3 +81,9 @@ export async function login(state,formData){
         await createSession(existingUser._id.toString())
         redirect("/")
 }
+
+export async function logout(){
+        const cookieStore=await cookies();
+        cookieStore.delete("session")
+        redirect("/")
+}
