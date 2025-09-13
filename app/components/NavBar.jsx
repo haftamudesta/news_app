@@ -66,7 +66,9 @@ const NavBar = ({authUser}) => {
                      {navLinksAuth.map((link) => (
                             <li key={link.href}>
                                 <Link 
-                                    href={link.href}>
+                                href={link.href}
+                                className={`${pathname === link.href ? 'bg-purple-500 text-emerald-500' : ''} px-4 py-1 rounded-lg font-bold hover:bg-primary/80 transition-colors`}
+                                >
                                     {link.label}
                                 </Link>
                             </li>
