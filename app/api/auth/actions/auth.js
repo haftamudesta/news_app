@@ -2,7 +2,7 @@
 
 import bcrypt from "bcrypt"
 import { getCollection } from "@/lib/mongoDB"
-import { LoginFormSchema } from "@/lib/rules";
+import { LoginFormSchema,RegisterFormSchema } from "@/lib/rules";
 import { redirect } from "next/navigation";
 import { createSession } from "@/lib/sessions";
 import { cookies } from "next/headers";
@@ -79,5 +79,11 @@ export async function login(state,formData){
                 }
         }
         await createSession(existingUser._id.toString())
+        redirect("/")
+}
+
+export async function logout(){
+        const cookieStore=await cookies();
+        cookieStore.delete("session")
         redirect("/")
 }

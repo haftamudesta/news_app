@@ -8,6 +8,7 @@ import { XMarkIcon, Bars3Icon } from '@heroicons/react/16/solid';
 import { FaHome,FaBookOpen,FaEye,FaChartLine  } from "react-icons/fa";
 import { BiSolidCategory } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
+import { logout } from "../api/auth/actions/auth";
 
 const navLinks = [
         { href: "/", label: "Home", icon: <FaHome className="w-5 h-5" /> },
@@ -15,11 +16,13 @@ const navLinks = [
         { href: "/news/most_viewed", label: "Most Viewed", icon: <FaEye className="w-5 h-5" /> },
         { href: "/news/trending", label: "Trending", icon: <FaChartLine className="w-5 h-5" /> },
         { href: "/admin-controls/categories", label: "Categories", icon: <BiSolidCategory className="w-5 h-5" /> },
-        { href: "/register", label: "Sign Up", icon: <CgProfile className="w-5 h-5" /> },
-        { href: "/login", label: "Sign In", icon: <CgProfile className="w-5 h-5" /> }
+        
     ];
+const navLinksAuth = [
+    { href: "/register", label: "Sign Up", icon: <CgProfile className="w-5 h-5" /> },
+    { href: "/login", label: "Sign In", icon: <CgProfile className="w-5 h-5" /> }]
 
-const NavBar = () => {
+const NavBar = ({authUser}) => {
         const router=useRouter();
         const pathname=usePathname();
         const [isOpenMenu, setIsOpenMenu] = useState(false);
@@ -37,7 +40,7 @@ const NavBar = () => {
                     />
                     <p className="text-white hidden sm:block">News App</p>
                 </div>
-
+            {authUser?(
                 <nav className="hidden md:block">
                     <ul className="flex gap-2">
                      {navLinks.map((link) => (
@@ -51,7 +54,29 @@ const NavBar = () => {
                             </li>
                         ))}
                     </ul>
+                    <form action={logout}>
+                        <button className='text-red-400 font-bold bg-teal-400 px-2 rounded-md py-1 cursor-pointer'>
+                            Logout
+                        </button>
+                    </form>
                 </nav>
+            ):(
+                <nav>
+                    <ul className="flex gap-6">
+                     {navLinksAuth.map((link) => (
+                            <li key={link.href}>
+                                <Link 
+                                href={link.href}
+                                className={`${pathname === link.href ? 'bg-purple-500 text-emerald-500' : ''} px-4 py-1 rounded-lg font-bold hover:bg-primary/80 transition-colors`}
+                                >
+                                    {link.label}
+                                </Link>
+                            </li>
+                     ))}
+                     </ul>
+                </nav>
+            )}
+                
                 <button 
                     className="md:hidden z-50 p-2 rounded-lg bg-white/10 hover:bg-blue-400 transition-colors"
                     onClick={() => setIsOpenMenu(!isOpenMenu)}
