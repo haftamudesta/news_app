@@ -15,7 +15,7 @@ const navLinks = [
         { href: "/news/recent_news", label: "Recent News", icon: <FaBookOpen className="w-5 h-5" /> },
         { href: "/news/most_viewed", label: "Most Viewed", icon: <FaEye className="w-5 h-5" /> },
         { href: "/news/trending", label: "Trending", icon: <FaChartLine className="w-5 h-5" /> },
-        { href: "/admin-controls/categories", label: "Categories", icon: <BiSolidCategory className="w-5 h-5" /> },
+        { href: "/admin_controls/categories", label: "Categories", icon: <BiSolidCategory className="w-5 h-5" /> },
         
     ];
 const navLinksAuth = [

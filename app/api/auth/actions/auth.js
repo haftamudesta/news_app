@@ -68,10 +68,7 @@ export async function register(state,formData){
                  
 }
 
-
-
 export async function login(state,formData){
-        console.log(formData.get("email"),formData.get("password"))
         const validateFormFields=LoginFormSchema.safeParse({
                 email:formData.get("email"),
                 password:formData.get("password"),
@@ -83,30 +80,34 @@ export async function login(state,formData){
                 }
         }
         const {email,password}=validateFormFields.data;
-        const userCollection=await getCollection("users");
-        if(!userCollection) return {
-                errors:
-                {message:"Server Error!!"}
-        };
-
-        const existingUser=await userCollection.findOne({ email })
-        console.log(existingUser)
-        if(!existingUser){
-                return{
-                        errors:
-                {message:"Invalid Credentials!!"}
-                }
+       await connectToDB();
+        const existingUser = await User.findOne({ email });
+        if (!existingUser) {
+                return {
+                        errors: {
+                                email: ["Email does not exist. Please log in with valid Email."],
+                        },
+                };
         }
         const validatePassword=await bcrypt.compare(password,existingUser.password);
-
         if(!validatePassword){
                 return{
                         errors:
                         {message:"Invalid Credentials!!"}
                 }
         }
-        await createSession(existingUser._id.toString())
-        redirect("/")
+        try {
+    await createSession(existingUser._id.toString());
+  } catch (error) {
+    console.error("Session creation failed during login:", error);
+    return {
+      errors: {
+        message: ["Could not start session. Please try again."],
+      },
+    };
+  }
+  redirect("/");
+  return; 
 }
 
 export async function logout(){
