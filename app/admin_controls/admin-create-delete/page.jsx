@@ -5,35 +5,53 @@ import Select from "@/app/components/Select";
 import { ShowMessage } from "@/app/components/ShowMessage";
 import { useSession } from "next-auth/react";
 import { useEffect,useState } from "react";
-import { createadminAction, deleteAdminAction, fetchAdminAction } from "@/app/actions/adminActions";
+import {fetchAllUsers, createadminAction, deleteAdminAction, fetchAdminAction }
+from "@/app/actions/adminActions";
 import { useRouter } from "next/navigation";
 import SubmitButton from "@/app/components/SubmitButton";
 import { MdDelete } from "react-icons/md";
+import {getAutenticatedhUser} from "@/lib/getAuthUser";
 
 
 export default function page(){
-        const {status, data: session}=useSession();
-        const [adminData,setAdminData]=useState([])
-        console.log("session create",session)
+        const {status}=useSession();
+        const [adminData,setAdminData]=useState([]);
+        const [user,setUser]=useState([])
         const router=useRouter();
+        
+        
+
+        // useEffect(()=>{
+        //         const fetchData=async ()=>{
+        //                 try{
+        //                         const fetchedadmindata=await fetchAdminAction();
+        //                         setAdminData(fetchedadmindata)
+        //                 }catch(error){
+        //                         throw new Error(error)
+        //                 }
+        //         }
+        //         fetchData();
+        // },[])
 
         useEffect(()=>{
-                const fetchData=async ()=>{
+                const fetchUsers=async ()=>{
                         try{
-                                const fetchedadmindata=await fetchAdminAction();
-                                setAdminData(fetchedadmindata)
+                                const fetchedUser=await getAutenticatedhUser();
+                                setUser(fetchedUser)
                         }catch(error){
                                 throw new Error(error)
                         }
                 }
-                fetchData();
+                fetchUsers();
         },[])
+
+        console.log("all users:",user);
         if(status==='loading'){
                 return <p>Loading...</p>
         }
-        // if(status === 'unauthenticated' || session?.user.role !=='user'){
-        //         return <ShowMessage message="you are not super admin" />
-        // }
+        if(!user || user.role ==='user'){
+                return <ShowMessage message="you are not super admin" />
+        }
         return (
                 <div className="grid place-items-center min-h-screen">
                         <form action={async (formData)=>{await createadminAction(formData)

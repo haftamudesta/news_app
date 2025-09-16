@@ -1,6 +1,6 @@
 'use server'
 
-import { getCollection } from "@/lib/mongoDB";
+import { connectToDB } from "@/lib/mongoDB";
 import User from "@/models/UsersModel";
 import Joi from "joi";
 
@@ -10,17 +10,6 @@ const joiAdminSchema=Joi.object({
 })
 
 
-export const fetchAdminAction =async ()=>{
-        try{
-                await getCollection ("user");
-                const result=await User.find({role:'admi'}).select('name,email,role');
-                const dataObject=JSON.parse(JSON.stringfy(result));
-                return dataObject;
-        }catch(error){
-                throw new Error(error);
-        }
-}
-
 export async function createadminAction(formData) {
         try{
                 const email=formData.get('email')?.toString();
@@ -29,7 +18,7 @@ export async function createadminAction(formData) {
                 if(error){
                         throw new Error(error)
                 }
-                await connectToMongoDB();
+                await connectToDB();
                 const existingUser=await User.findOne({email});
                 if(!existingUser){
                         throw new Error("User does not exist!")
