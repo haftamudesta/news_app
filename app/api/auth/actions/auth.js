@@ -55,7 +55,7 @@ export async function register(state,formData){
 
         try {
                 await createSession(newUser._id.toString());
-                redirect("/");
+          
         } catch (error) {
                 console.error("Session creation failed:", error);
                 return {
@@ -63,7 +63,9 @@ export async function register(state,formData){
                                 message: ["Could not start session. Please log in manually."],
                         },
                 };
-        }      
+        }
+        redirect("/");
+                 
 }
 
 
