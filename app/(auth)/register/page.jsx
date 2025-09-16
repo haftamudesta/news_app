@@ -12,6 +12,16 @@ export default function Register(){
                                 <h1 className="text-center font-bold">Register</h1>
                         <form action={action} className="flex flex-col gap-4" >
                                 <div className="flex flex-col">
+                                        <label htmlFor="name">Name:</label>
+                                        <input type="text" name="name"
+                                        className="border-2 border-gray-400"
+                                        defaultValue={state?.name}
+                                         />
+                                         {state?.errors?.name&&
+                                         <p className="text-red-600 font-bold">      {state.errors.name}
+                                         </p>}
+                                </div>
+                                <div className="flex flex-col">
                                         <label htmlFor="email">Email:</label>
                                         <input type="text" name="email"
                                         className="border-2 border-gray-400"

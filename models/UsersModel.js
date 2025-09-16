@@ -18,7 +18,6 @@ const userSchema=new mongoose.Schema({
         },
         image:{
                 type:String,
-                require:true,
         },
         role:{
                 type:String,
@@ -31,23 +30,23 @@ const userSchema=new mongoose.Schema({
         }
 },{timestamps:true})
 
-userSchema.virtual('confirmPassword')
-  .get(function() {
-    return this._confirmPassword;
-  })
-  .set(function(value) {
-    this._confirmPassword = value;
-  });
+// userSchema.virtual('confirmPassword')
+//   .get(function() {
+//     return this._confirmPassword;
+//   })
+//   .set(function(value) {
+//     this._confirmPassword = value;
+//   });
 
-userSchema.pre('validate', function(next) {
-  if (this.password !== this.confirmPassword) {
-    this.invalidate('confirmPassword', 'Passwords do not match');
-  }
-  next();
-});
-userSchema.set('toJSON', {
-  virtuals: true
-});
+// userSchema.pre('validate', function(next) {
+//   if (this.password !== this.confirmPassword) {
+//     this.invalidate('confirmPassword', 'Passwords do not match');
+//   }
+//   next();
+// });
+// userSchema.set('toJSON', {
+//   virtuals: true
+// });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 export default User;

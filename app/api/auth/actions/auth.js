@@ -1,14 +1,16 @@
 "use server"
 
 import bcrypt from "bcrypt"
-import { getCollection } from "@/lib/mongoDB"
+import { connectToDB } from "@/lib/mongoDB"
 import { LoginFormSchema,RegisterFormSchema } from "@/lib/rules";
 import { redirect } from "next/navigation";
 import { createSession } from "@/lib/sessions";
 import { cookies } from "next/headers";
+import User from "@/models/UsersModel"
 
 export async function register(state,formData){
         const validateFormFields=RegisterFormSchema.safeParse({
+                name:formData.get("name"),
                 email:formData.get("email"),
                 password:formData.get("password"),
                 confirmPassword:formData.get("confirmPassword")
@@ -20,27 +22,51 @@ export async function register(state,formData){
                 }
         }
 
-        const {email,password}=validateFormFields.data
-        const userCollection=await getCollection("users");
-        if(!userCollection) return {
-                errors:
-                {message:"Server Error!!"}
-        };
-
-        const existingUser=await userCollection.findOne({ email })
-        if(existingUser){
-                return{
-                        errors:
-                {message:"Email already exist. Please log in with your email!!"}
-                }
+        const {name,email,password}=validateFormFields.data;
+        await connectToDB();
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+                return {
+                        errors: {
+                                email: ["Email already exists. Please log in instead."],
+                        },
+                };
         }
         
         const hashedPassword=await bcrypt.hash(password,10);
-        const results=await userCollection.insertOne({email,password:hashedPassword})
+        const newUser = new User({
+                name,
+                email,
+                password: hashedPassword,
+                role: "user",
+        });
+        console.log(newUser)
 
-        await createSession(results.insertedId.toString())
-        redirect("/")      
+        try {
+                await newUser.save();
+        } catch (error) {
+                console.error("User creation failed:", error);
+                return {
+                        errors: {
+                                message: ["Failed to create account. Please try again."],
+                        },
+                };
+        }
+
+        try {
+                await createSession(newUser._id.toString());
+                redirect("/");
+        } catch (error) {
+                console.error("Session creation failed:", error);
+                return {
+                        errors: {
+                                message: ["Could not start session. Please log in manually."],
+                        },
+                };
+        }      
 }
+
+
 
 export async function login(state,formData){
         console.log(formData.get("email"),formData.get("password"))
