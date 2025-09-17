@@ -9,7 +9,6 @@ const joiAdminSchema=Joi.object({
         role:Joi.string().required(),
 })
 
-
 export async function createadminAction(formData) {
         try{
                 const email=formData.get('email')?.toString();
@@ -21,7 +20,7 @@ export async function createadminAction(formData) {
                 await connectToDB();
                 const existingUser=await User.findOne({email});
                 if(!existingUser){
-                        throw new Error("User does not exist!")
+                        throw new Error("User does not exist!");
                 }
                 existingUser.role=role;
                 const result=await existingUser.save();
@@ -43,5 +42,4 @@ export const deleteAdminAction=async (email)=>{
         }catch(error){
                 throw new Error(error)
         }
-
 }
